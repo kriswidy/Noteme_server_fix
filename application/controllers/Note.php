@@ -32,13 +32,27 @@
                 'tanggal' => $this->post('tanggal'));
             $insert = $this->db->insert('isi_note', $data);
             if($insert){
-                $this->response($data, 200);
+                $this->response(array('status' => 'success','result' => $data, 200));
             }else{
                 $this->response(array('status' => 'fail', 502));
             }
         }
+
+        public function index_put()
+        {
+            $judul = $this->put('judul');
+            $data = array(
+                'note' => $this->put('note'));
+            $this->db->where('judul', $judul);
+            $update = $this->db->update('isi_note', $data);
+            if ($update) {
+                    $this->response(array('status' => 'sukses', 'result' => $data, 'message' => 'Data berhasil diubah'));
+            } else {
+                    $this->response(array('status' => 'gagal', 'result' => $data, 'message' => 'Data gagal diubah'));
+            }
+        }
         
-        public function kategori_post()
+        public function note_post()
         {
             $id_user = $this->input->post('id_user');
             $this->db->select('*');
@@ -46,10 +60,21 @@
             $this->db->join('user_noteme as u', 'i.id_user = u.id_user');
             $this->db->where('i.id_user', $id_user);
             $query = $this->db->get()->result();
-            $this->response($query, 200);
+            $this->response(array('result' => $query, 200));
+        }
+
+        public function delete_post(){
+            $judul = $this->input->post('judul');
+            $this->db->where('judul', $judul);
+            $delete = $this->db->delete('isi_note');
+            if ($delete) {
+                $this->response(array('status' => 'success'), 201);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
         }
     }
     
     /* End of file Controllername.php */
     
-?>
+?> 
